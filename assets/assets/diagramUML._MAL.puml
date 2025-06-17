@@ -1,0 +1,174 @@
+@startuml
+' Definició dels actors
+actor "Usuari Normal" as Normal
+actor "Usuari Administrador" as Admin
+actor "Superusuari" as Super
+
+' Relacions de generalització
+Admin --> Normal : <<generalització>>
+Super --> Admin : <<generalització>>
+
+' FUNCIONALITATS USUARI NORMAL
+Normal --> (Accedir a pàgina de registre)
+Normal --> (Accedir a pàgina de login)
+Normal --> (Canviar mode visual)
+Normal --> (Iniciar sessió)
+Normal --> (Registrar compte)
+Normal --> (Recuperar contrasenya)
+Normal --> (Navegar a seccions)
+Normal --> (Accedir al PopUpMenuBar)
+Normal --> (Accedir al perfil)
+Normal --> (Visualitzar saldo)
+Normal --> (Accedir al Marketplace)
+Normal --> (Comprar ítems)
+Normal --> (Guardar credencials)
+Normal --> (Consultar equip de batalla)
+Normal --> (Consultar criatures)
+Normal --> (Crear criatures)
+Normal --> (Modificar equip de batalla)
+Normal --> (Accedir al detall de criatures)
+Normal --> (Mostrar dades bàsiques)
+Normal --> (Iniciar partida individual)
+Normal --> (Iniciar partida en línia)
+Normal --> (Cercar partida en línia)
+Normal --> (Veure cofres obtinguts)
+Normal --> (Desbloquejar cofres)
+Normal --> (Rebre recompenses)
+Normal --> (Consultar estadístiques)
+Normal --> (Editar informació personal)
+Normal --> (Eliminar dades locals)
+Normal --> (Tancar sessió)
+
+' FUNCIONALITATS FUTURES EXTENDIDES (NORMAL)
+Normal --> (Observar objectes publicats) : <<extend>>
+Normal --> (Publicar ítems) : <<extend>>
+Normal --> (Comprar elements publicats) : <<extend>>
+Normal --> (Comprar butlletes) : <<extend>>
+Normal --> (Participar en sorteigs) : <<extend>>
+Normal --> (Consultar rànquing loteria) : <<extend>>
+Normal --> (Intercanviar butlletes per BTC) : <<extend>>
+
+' FUNCIONALITATS ADMIN (enfocades a clans)
+Admin --> (Crear clans)
+Admin --> (Afegir usuaris a clans)
+Admin --> (Bloquejar usuaris en clan)
+
+' FUNCIONALITATS SUPERUSUARI
+Super --> (Accedir a pàgina de superusuari)
+Super --> (Esborrar usuaris)
+Super --> (Afegir/eliminar administradors)
+
+' RELACIONS INCLUDE I EXTEND
+(Iniciar sessió) .> (Validar credencials) : <<include>>
+(Canviar mode visual) .> (Guardar a localStorage) : <<include>>
+(Crear criatures) .> (Guardar a MySQL) : <<include>>
+(Modificar equip de batalla) .> (Consultar criatures) : <<include>>
+(Recuperar contrasenya) .> (Enviar correu manual) : <<extend>>
+(Recuperar contrasenya) .> (Automatitzar amb SendGrid) : <<extend>>
+(Navegar a seccions) .> (Mostrar PopUpMenuBar) : <<include>>
+(Iniciar partida en línia) .> (Cercar partida en línia) : <<include>>
+(Comprar ítems) .> (Actualitzar saldo) : <<include>>
+(Desbloquejar cofres) .> (Rebre recompenses) : <<include>>
+(Editar informació personal) .> (Guardar a MySQL) : <<include>>
+(Tancar sessió) .> (Redirigir a pantalla d'inici) : <<include>>
+(Crear clans) .> (Guardar a MySQL) : <<include>>
+(Bloquejar usuaris en clan) .> (Actualitzar estat usuari) : <<include>>
+(Esborrar usuaris) .> (Actualitzar base de dades) : <<include>>
+(Afegir/eliminar administradors) .> (Actualitzar rols) : <<include>>
+
+' NOTES ACLARIDORES
+note left of Super
+  Pot accedir a funcionalitats sensibles com gestió i eliminació d’usuaris.
+end note
+
+note left of Admin
+  Pot gestionar clans (crear, afegir i bloquejar usuaris en el context del clan).
+end note
+
+note right of (Recuperar contrasenya)
+  Actualment es fa manualment, es vol automatitzar amb SendGrid.
+end note
+
+note right of (Publicar ítems)
+  Funcionalitat planificada pel mercat col·laboratiu.
+end note
+
+note right of (Participar en sorteigs)
+  Funcionalitat planificada dins la loteria.
+end note
+
+' ESTIL
+skinparam monochrome true
+skinparam actorStyle awesome
+skinparam packageStyle rectangle
+skinparam defaultFontSize 12
+skinparam shadowing false
+skinparam ranksep 30
+skinparam nodesep 30
+
+' AGRUPACIÓ DE CASOS D'ÚS
+package "Pantalla d'Inici" {
+  (Accedir a pàgina de registre)
+  (Accedir a pàgina de login)
+  (Canviar mode visual)
+}
+package "Login/Registre" {
+  (Iniciar sessió)
+  (Registrar compte)
+  (Recuperar contrasenya)
+}
+package "Pantalla Principal / Tenda" {
+  (Navegar a seccions)
+  (Accedir al PopUpMenuBar)
+  (Accedir al perfil)
+  (Visualitzar saldo)
+  (Accedir al Marketplace)
+  (Comprar ítems)
+  (Guardar credencials)
+}
+package "Gestió d'Equip i Criatures" {
+  (Consultar equip de batalla)
+  (Consultar criatures)
+  (Crear criatures)
+  (Modificar equip de batalla)
+  (Accedir al detall de criatures)
+}
+package "Batalla" {
+  (Mostrar dades bàsiques)
+  (Iniciar partida individual)
+  (Iniciar partida en línia)
+  (Cercar partida en línia)
+  (Veure cofres obtinguts)
+  (Desbloquejar cofres)
+  (Rebre recompenses)
+}
+package "Mercat Col·laboratiu (Futura)" {
+  (Observar objectes publicats)
+  (Publicar ítems)
+  (Comprar elements publicats)
+}
+package "Loteria (Futura)" {
+  (Comprar butlletes)
+  (Participar en sorteigs)
+  (Consultar rànquing loteria)
+  (Intercanviar butlletes per BTC)
+}
+package "Perfil d'Usuari" {
+  (Consultar estadístiques)
+  (Editar informació personal)
+}
+package "Funcionalitats d'Administrador" {
+  (Crear clans)
+  (Afegir usuaris a clans)
+  (Bloquejar usuaris en clan)
+}
+package "Funcionalitats de Superusuari" {
+  (Accedir a pàgina de superusuari)
+  (Esborrar usuaris)
+  (Afegir/eliminar administradors)
+}
+package "Altres Funcionalitats" {
+  (Eliminar dades locals)
+  (Tancar sessió)
+}
+@enduml
